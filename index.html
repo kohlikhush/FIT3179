@@ -1,11 +1,421 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="utf-8" />
+  <title>Australia | Cancer Outcomes & Health Workforce</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Vega, Vega-Lite, Embed -->
+  <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
+
+  <style>
+    :root {
+      --maxw: 1320px;   /* wider to reduce side whitespace */
+      --g: 20px;
+      --card-bg: #fff;
+      --muted: #666;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      color: #111;
+      background: #f6f7fb;
+      font: 16px/1.55 system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+    }
+    header {
+      background: #0f172a;
+      color: #fff;
+      padding: 28px 16px 24px;
+    }
+    header h1 { margin: 0 0 10px; font-weight: 800; }
+    header p  { margin: 0; color: #cbd5e1; max-width: var(--maxw); }
+
+    main {
+      max-width: var(--maxw);
+      margin: 20px auto 56px;
+      padding: 0 16px;
+    }
+
+    .block, .card {
+      background: var(--card-bg);
+      border-radius: 14px;
+      padding: 18px;
+      margin: 0 0 var(--g);               /* uniform vertical rhythm */
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05), 0 10px 28px rgba(0,0,0,0.06);
+    }
+    .block h2 { margin: 0 0 8px; }
+    .block p  { margin: 0 0 6px; color: var(--muted); }
+
+    .grid {
+      display: grid;
+      gap: var(--g);
+      grid-template-columns: 1fr;         /* 1 col on small screens */
+    }
+    @media (min-width: 900px) {
+      .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } /* two equal columns */
+    }
+
+    .card h3 { margin: 0 0 10px; }
+    .byline { margin: 8px 0 0; color: var(--muted); }
+
+    .vis { min-height: 360px; width: 100%; }
+    .vis canvas, .vis svg { width: 100% !important; height: auto; }
+
+    .controls { margin: 6px 0 2px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+    .controls label { font-size: 14px; color: var(--muted); }
+    .controls input[type="range"] { width: 220px; }
+
+    /* Donut spans both columns */
+    .span-2 { grid-column: 1 / -1; }
+
+    footer { color: var(--muted); font-size: 14px; text-align: center; padding: 18px 16px 44px; }
+  </style>
 </head>
 <body>
-    
+  <header>
+    <h1>Australia: Cancer Outcomes & Health Workforce</h1>
+    <p>
+      A concise narrative linking patient outcomes with the size and composition of Australia’s health workforce.
+      We begin with state differences in cancer survival, then examine how the national workforce has changed over time.
+    </p>
+  </header>
+
+  <main>
+    <!-- Introduction -->
+    <section class="block">
+      <h2>Introduction</h2>
+      <p>
+        Cancer outcomes are not uniform across Australia. Geography, access to services, and staffing capacity all shape how
+        patients fare. This page pairs a map and a ranking to reveal state differences in the percentage of patients alive in our
+        sample, and then turns to workforce trends from 2013–2023 to understand capacity and mix. The goal is a quick, clear story:
+        <em>where outcomes differ, and what the staffing context looks like behind them.</em>
+      </p>
+      <p>
+        What: State-level cancer survival + national health-workforce levels and composition (2013–2023).
+        Why: Outcome gaps point to equity and access issues; staffing is a key lever for improvement.
+        How: Choropleth and ranking for outcomes; line, 100% stacked bars, and donut for composition and change.
+      </p>
+    </section>
+
+    <!-- Two-column grid -->
+    <section class="grid">
+      <!-- 1. Map -->
+      <article class="card">
+        <h3>1) Cancer – % Alive by State</h3>
+        <div id="map" class="vis"></div>
+        <p class="byline">
+          <strong>Takeaway.</strong> The geography of survival is uneven. Northern Territory and Western Australia trend higher, while ACT and Queensland
+          are lower in this sample. These differences hint at a combination of remoteness, referral patterns, and time to treatment.
+          <strong>Use.</strong> Hover to see each state’s average survival years and case counts; the map sets the context for the ranking next.
+        </p>
+      </article>
+
+      <!-- 2. Bar ranking -->
+      <article class="card">
+        <h3>2) State Ranking – % Alive</h3>
+        <div id="bar" class="vis"></div>
+        <p class="byline">
+          <strong>Takeaway.</strong> Ranking compresses the story: a clear spread of roughly mid-50s to low-60s. The gap between the top and bottom states
+          is material, suggesting that system factors (screening reach, travel time, service availability) are likely at play.
+          <strong>Use.</strong> The ordered view helps direct attention for deeper investigation.
+        </p>
+      </article>
+
+      <!-- 3. Line trends -->
+      <article class="card">
+        <h3>3) Health Workforce Trends (2013–2023)</h3>
+        <div class="controls">
+          <label for="profSelect">Highlight a profession:</label>
+          <select id="profSelect">
+            <option value="All">All</option>
+            <option>Medical Practitioners</option>
+            <option>Nurses and Midwives</option>
+            <option>Pharmacists</option>
+            <option>Physiotherapists</option>
+            <option>Psychologists</option>
+            <option>Occupational Therapists</option>
+            <option>Optometrists</option>
+            <option>Paramedicine Practitioners</option>
+            <option>Dental Practitioners</option>
+            <option>Medical Radiation Practitioners</option>
+            <option>Osteopaths</option>
+            <option>Podiatrists</option>
+            <option>Chiropractors</option>
+            <option>Chinese Medicine Practitioners</option>
+            <option>ATSI Health Practitioners</option>
+          </select>
+        </div>
+        <div id="line" class="vis"></div>
+        <p class="byline">
+          <strong>Takeaway.</strong> The health workforce expands steadily across the decade. Nurses &amp; Midwives remain the largest cohort,
+          with consistent growth in allied professions (e.g., physiotherapy, psychology). The spike in paramedicine post-2018 reflects
+          the profession’s formal registration. <strong>Use.</strong> Pick a single profession in the dropdown to focus.
+        </p>
+      </article>
+
+      <!-- 4. 100% stacked bars -->
+      <article class="card">
+        <h3>4) Workforce Composition – 100% by Year</h3>
+        <div class="controls">
+          <label for="stackSelect">Subset:</label>
+          <select id="stackSelect">
+            <option value="Core">Core six</option>
+            <option value="All">All professions</option>
+          </select>
+        </div>
+        <div id="stacked" class="vis"></div>
+        <p class="byline">
+          <strong>Takeaway.</strong> Despite growth in absolute numbers, the overall mix shifts only modestly—large categories continue to dominate,
+          with incremental rises in a few allied areas. <strong>Use.</strong> Toggle the subset to keep the display readable.
+        </p>
+      </article>
+
+      <!-- 5. Donut snapshot -->
+      <article class="card span-2">
+        <h3>5) Workforce Composition Snapshot</h3>
+        <div class="controls">
+          <label for="yearSlider">Year:</label>
+          <input id="yearSlider" type="range" min="2013" max="2023" step="1" value="2023" />
+          <strong id="yearLabel">2023</strong>
+          <label for="donutSubset" style="margin-left:10px;">Subset:</label>
+          <select id="donutSubset">
+            <option value="Core">Core six</option>
+            <option value="All">All professions</option>
+          </select>
+        </div>
+        <div id="donut" class="vis"></div>
+        <p class="byline">
+          <strong>Takeaway.</strong> A single-year mix shows who makes up the workforce at a glance; sliding through the years reveals small but
+          consistent shifts. <strong>Use.</strong> Move the slider to compare snapshots.
+        </p>
+      </article>
+    </section>
+
+    <!-- Conclusion -->
+    <section class="block">
+      <h2>Conclusion</h2>
+      <p>
+        The visuals suggest two connected themes. First, cancer outcomes differ by state—implying uneven access, travel burden,
+        or referral timing. Second, the national workforce has expanded across most professions, while the overall mix remains
+        relatively stable. Together, this points to capacity improving in aggregate, yet local gaps likely persist.
+      </p>
+      <p>
+        Practical next steps would join these views with remoteness (ASGS), screening participation, and facility coverage to identify
+        where additional staff, outreach, or navigation support could lift outcomes. The story here is a starting point: map the gap,
+        then align workforce deployment with need.
+      </p>
+    </section>
+  </main>
+
+  <footer>Data: Synthetic patient outcomes; AHPRA workforce counts (reshaped). Visuals: Vega-Lite.</footer>
+
+  <script>
+    /* ----------- shared responsive config ----------- */
+    const fit = { autosize: { type: "fit", contains: "padding" }, width: "container", config: { view: { stroke: null } } };
+
+    /* ===== 1) MAP ===== */
+    const mapSpec = {
+      "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+      ...fit,
+      "height": 380,
+      "projection": {"type": "mercator"},
+      "data": {"url":"https://raw.githubusercontent.com/kohlikhush/FIT3179/main/cancer_rates_australia_cleaned.csv",
+         "format":{"type":"csv"}},
+      "transform": [
+        {"calculate":"trim(datum.State)","as":"StateKey"},
+        {"aggregate":[
+          {"op":"mean","field":"Alive","as":"AlivePct"},
+          {"op":"mean","field":"Survival_Years","as":"AvgSurvival"},
+          {"op":"count","as":"Cases"}
+        ],"groupby":["StateKey"]},
+        {"lookup":"StateKey",
+         "from":{"data":{"url":"https://raw.githubusercontent.com/kohlikhush/FIT3179/main/australia_states.geojson",
+                "format":{"type":"json","property":"features"}},
+         "key":"properties.STATE_NAME","fields":["geometry"]},
+         "as":"geom"},
+        {"filter":"isValid(datum.geom)"},
+        {"calculate":"{type:'Feature', geometry: datum.geom, properties:{STATE_NAME: datum.StateKey}}","as":"feature"}
+      ],
+      "mark":{"type":"geoshape","stroke":"white"},
+      "encoding":{
+        "shape":{"field":"feature","type":"geojson"},
+        "color":{"field":"AlivePct","type":"quantitative","title":"Alive (%)","scale":{"scheme":"purples"}},
+        "tooltip":[
+          {"field":"StateKey","title":"State"},
+          {"field":"AlivePct","type":"quantitative","format":".1%","title":"Alive %"},
+          {"field":"AvgSurvival","type":"quantitative","format":".1f","title":"Avg survival (yrs)"},
+          {"field":"Cases","type":"quantitative","title":"Cases"}
+        ]
+      }
+    };
+
+    /* ===== 2) BAR ===== */
+    const barSpec = {
+      "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+      ...fit,
+      "height": 380,
+      "data": {"url":"https://raw.githubusercontent.com/kohlikhush/FIT3179/main/cancer_rates_australia_cleaned.csv",
+         "format":{"type":"csv"}},
+      "transform":[
+        {"calculate":"trim(datum.State)","as":"StateKey"},
+        {"aggregate":[
+          {"op":"mean","field":"Alive","as":"AlivePct"},
+          {"op":"count","as":"Cases"}
+        ],"groupby":["StateKey"]}
+      ],
+      "mark":"bar",
+      "encoding":{
+        "y":{"field":"StateKey","type":"nominal","sort":"-x","title":null},
+        "x":{"field":"AlivePct","type":"quantitative","title":"Alive (%)","axis":{"format":".0%"}},
+        "color":{"field":"AlivePct","type":"quantitative","scale":{"scheme":"purples"}, "legend":null},
+        "tooltip":[
+          {"field":"StateKey","title":"State"},
+          {"field":"AlivePct","type":"quantitative","format":".1%","title":"Alive %"},
+          {"field":"Cases","type":"quantitative","title":"Cases"}
+        ]
+      }
+    };
+
+    /* ===== 3) LINE (dropdown only, no legend signals) ===== */
+    function lineSpec(selected) {
+      const t = [
+        { "calculate": "trim(datum.professions)", "as": "ProfessionKey" },
+        { "filter": "isValid(datum.year) && isValid(datum.count)" }
+      ];
+      if (selected && selected !== 'All') {
+        t.push({ "filter": `datum.ProfessionKey == '${selected}'` });
+      }
+      return {
+        "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+        ...fit,
+        "height": 380,
+        "data": { "url": "https://raw.githubusercontent.com/kohlikhush/FIT3179/main/workforce_table.csv",
+          "format":{"type":"csv"} },
+        "transform": t,
+        "mark": { "type": "line", "point": true, "strokeWidth": 2 },
+        "encoding": {
+          "x": { "field": "year", "type": "ordinal", "sort": "ascending", "title": "Year" },
+          "y": { "field": "count", "type": "quantitative", "title": "Number of Practitioners" },
+          "color": { "field": "ProfessionKey", "type": "nominal", "title": "Profession" },
+          "tooltip": [
+            { "field": "year", "title": "Year" },
+            { "field": "ProfessionKey", "title": "Profession" },
+            { "field": "count", "type": "quantitative", "title": "Count", "format": "," }
+          ]
+        }
+      };
+    }
+
+    /* ===== 4) STACKED (dropdown subset, no legend signals) ===== */
+    function stackedSpec(mode) {
+      const core = ['Nurses and Midwives','Medical Practitioners','Pharmacists','Physiotherapists','Psychologists','Occupational Therapists'];
+      const filterExpr = (mode === 'Core')
+        ? `indexof(${JSON.stringify(core)}, datum.ProfessionKey) >= 0`
+        : 'true';
+
+      return {
+        "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+        ...fit,
+        "height": 380,
+        "data": { "url": "https://raw.githubusercontent.com/kohlikhush/FIT3179/main/workforce_table.csv",
+          "format":{"type":"csv"} },
+        "transform": [
+          { "calculate": "trim(datum.professions)", "as": "ProfessionKey" },
+          { "filter": filterExpr },
+          { "aggregate": [{"op":"sum","field":"count","as":"Count"}],
+            "groupby": ["year","ProfessionKey"] },
+          { "joinaggregate": [{"op":"sum","field":"Count","as":"YearTotal"}],
+            "groupby": ["year"] },
+          { "calculate": "datum.Count / datum.YearTotal", "as": "Share" }
+        ],
+        "mark": "bar",
+        "encoding": {
+          "x": { "field": "year", "type": "ordinal", "sort": "ascending", "axis": {"labelAngle":0}, "title": "Year" },
+          "y": { "field": "Count", "type": "quantitative", "stack": "normalize", "title": "Share of Workforce" },
+          "color": { "field": "ProfessionKey", "type": "nominal", "title": "Profession", "legend": {"orient":"bottom","columns":3} },
+          "tooltip": [
+            {"field":"year","title":"Year"},
+            {"field":"ProfessionKey","title":"Profession"},
+            {"field":"Count","type":"quantitative","title":"Practitioners","format":","},
+            {"field":"Share","type":"quantitative","title":"Share","format":".1%"}
+          ]
+        }
+      };
+    }
+
+    /* ===== 5) DONUT (year slider + subset dropdown, no legend signals) ===== */
+    function donutSpec(year, subsetMode) {
+      const core = ['Nurses and Midwives','Medical Practitioners','Pharmacists','Physiotherapists','Psychologists','Occupational Therapists'];
+      const filterExpr = (subsetMode === 'Core')
+        ? `indexof(${JSON.stringify(core)}, datum.ProfessionKey) >= 0`
+        : 'true';
+
+      return {
+        "$schema":"https://vega.github.io/schema/vega-lite/v5.json",
+        ...fit,
+        "height": 360,
+        "data": { "url": "https://raw.githubusercontent.com/kohlikhush/FIT3179/main/workforce_table.csv",
+          "format":{"type":"csv"} },
+        "transform": [
+          { "calculate": "trim(datum.professions)", "as": "ProfessionKey" },
+          { "calculate": "toNumber(datum.year)", "as": "YearNum" },
+          { "filter": `datum.YearNum == ${year}` },
+          { "filter": filterExpr },
+          { "aggregate": [{"op":"sum","field":"count","as":"Count"}],
+            "groupby": ["ProfessionKey"] },
+          { "joinaggregate": [{"op":"sum","field":"Count","as":"Total"}] },
+          { "calculate": "datum.Count / datum.Total", "as": "Share" }
+        ],
+        "mark": { "type": "arc", "innerRadius": 140, "stroke": "white" },
+        "encoding": {
+          "theta": { "field": "Count", "type": "quantitative" },
+          "color": { "field": "ProfessionKey", "type": "nominal", "title": "Profession", "legend": {"orient":"right"} },
+          "tooltip": [
+            { "field": "ProfessionKey", "title": "Profession" },
+            { "field": "Count", "type": "quantitative", "title": "Practitioners", "format": "," },
+            { "field": "Share", "type": "quantitative", "title": "Share", "format": ".1%" }
+          ]
+        }
+      };
+    }
+
+    /* -------- render helpers (no custom signals/params) -------- */
+    let mapView, barView, lineView, stackedView, donutView;
+
+    function renderMap()     { return vegaEmbed('#map', mapSpec, {actions:false}).then(r=>mapView=r.view); }
+    function renderBar()     { return vegaEmbed('#bar', barSpec, {actions:false}).then(r=>barView=r.view); }
+    function renderLine()    {
+      const sel = document.getElementById('profSelect');
+      return vegaEmbed('#line', lineSpec(sel.value), {actions:false}).then(r=>lineView=r.view);
+    }
+    function renderStacked() {
+      const sel = document.getElementById('stackSelect');
+      return vegaEmbed('#stacked', stackedSpec(sel.value), {actions:false}).then(r=>stackedView=r.view);
+    }
+    function renderDonut()   {
+      const slider = document.getElementById('yearSlider');
+      const label  = document.getElementById('yearLabel');
+      const subset = document.getElementById('donutSubset');
+      label.textContent = slider.value;
+      return vegaEmbed('#donut', donutSpec(+slider.value, subset.value), {actions:false}).then(r=>donutView=r.view);
+    }
+
+    function init() {
+      document.getElementById('profSelect').addEventListener('change', renderLine);
+      document.getElementById('stackSelect').addEventListener('change', renderStacked);
+      document.getElementById('yearSlider').addEventListener('input', renderDonut);
+      document.getElementById('donutSubset').addEventListener('change', renderDonut);
+
+      // render after a frame so grid sizes are known
+      requestAnimationFrame(() => {
+        Promise.all([renderMap(), renderBar()])
+          .then(() => Promise.all([renderLine(), renderStacked(), renderDonut()]));
+      });
+    }
+
+    window.addEventListener('DOMContentLoaded', init);
+  </script>
 </body>
 </html>
