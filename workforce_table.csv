@@ -1,0 +1,171 @@
+professions,year,count
+ATSI Health Practitioners,2013,270
+ATSI Health Practitioners,2014,265
+ATSI Health Practitioners,2015,451
+ATSI Health Practitioners,2016,474
+ATSI Health Practitioners,2017,487
+ATSI Health Practitioners,2018,547
+ATSI Health Practitioners,2019,549
+ATSI Health Practitioners,2020,620
+ATSI Health Practitioners,2021,639
+ATSI Health Practitioners,2022,664
+ATSI Health Practitioners,2023,716
+Chiropractors,2013,4185
+Chiropractors,2014,4307
+Chiropractors,2015,4480
+Chiropractors,2016,4589
+Chiropractors,2017,4656
+Chiropractors,2018,4754
+Chiropractors,2019,4982
+Chiropractors,2020,5130
+Chiropractors,2021,5226
+Chiropractors,2022,5376
+Chiropractors,2023,5602
+Chinese Medicine Practitioners,2013,3668
+Chinese Medicine Practitioners,2014,3762
+Chinese Medicine Practitioners,2015,3933
+Chinese Medicine Practitioners,2016,3983
+Chinese Medicine Practitioners,2017,4019
+Chinese Medicine Practitioners,2018,4058
+Chinese Medicine Practitioners,2019,4099
+Chinese Medicine Practitioners,2020,4010
+Chinese Medicine Practitioners,2021,3952
+Chinese Medicine Practitioners,2022,4075
+Chinese Medicine Practitioners,2023,4128
+Dental Practitioners,2013,17847
+Dental Practitioners,2014,18530
+Dental Practitioners,2015,19051
+Dental Practitioners,2016,19490
+Dental Practitioners,2017,19949
+Dental Practitioners,2018,20589
+Dental Practitioners,2019,21307
+Dental Practitioners,2020,21549
+Dental Practitioners,2021,22039
+Dental Practitioners,2022,22964
+Dental Practitioners,2023,23731
+Medical Practitioners,2013,82408
+Medical Practitioners,2014,85491
+Medical Practitioners,2015,87999
+Medical Practitioners,2016,91341
+Medical Practitioners,2017,95194
+Medical Practitioners,2018,98395
+Medical Practitioners,2019,101841
+Medical Practitioners,2020,105293
+Medical Practitioners,2021,108501
+Medical Practitioners,2022,111908
+Medical Practitioners,2023,116610
+Medical Radiation Practitioners,2013,11757
+Medical Radiation Practitioners,2014,12379
+Medical Radiation Practitioners,2015,12830
+Medical Radiation Practitioners,2016,13156
+Medical Radiation Practitioners,2017,13624
+Medical Radiation Practitioners,2018,14154
+Medical Radiation Practitioners,2019,14865
+Medical Radiation Practitioners,2020,15380
+Medical Radiation Practitioners,2021,16088
+Medical Radiation Practitioners,2022,16450
+Medical Radiation Practitioners,2023,17233
+Nurses and Midwives,2013,295060
+Nurses and Midwives,2014,300077
+Nurses and Midwives,2015,306487
+Nurses and Midwives,2016,315164
+Nurses and Midwives,2017,323122
+Nurses and Midwives,2018,333970
+Nurses and Midwives,2019,344941
+Nurses and Midwives,2020,349589
+Nurses and Midwives,2021,366696
+Nurses and Midwives,2022,372759
+Nurses and Midwives,2023,391241
+Occupational Therapists,2013,13309
+Occupational Therapists,2014,14023
+Occupational Therapists,2015,15022
+Occupational Therapists,2016,15928
+Occupational Therapists,2017,17025
+Occupational Therapists,2018,18447
+Occupational Therapists,2019,20016
+Occupational Therapists,2020,21709
+Occupational Therapists,2021,23346
+Occupational Therapists,2022,24829
+Occupational Therapists,2023,26973
+Optometrists,2013,4219
+Optometrists,2014,4322
+Optometrists,2015,4557
+Optometrists,2016,4734
+Optometrists,2017,4832
+Optometrists,2018,5060
+Optometrists,2019,5330
+Optometrists,2020,5437
+Optometrists,2021,5686
+Optometrists,2022,6002
+Optometrists,2023,6275
+Osteopaths,2013,1609
+Osteopaths,2014,1737
+Osteopaths,2015,1833
+Osteopaths,2016,1914
+Osteopaths,2017,2023
+Osteopaths,2018,2207
+Osteopaths,2019,2401
+Osteopaths,2020,2538
+Osteopaths,2021,2721
+Osteopaths,2022,2866
+Osteopaths,2023,3011
+Pharmacists,2013,21838
+Pharmacists,2014,22454
+Pharmacists,2015,23134
+Pharmacists,2016,23842
+Pharmacists,2017,24609
+Pharmacists,2018,25139
+Pharmacists,2019,25845
+Pharmacists,2020,26795
+Pharmacists,2021,27744
+Pharmacists,2022,28535
+Pharmacists,2023,29582
+Physiotherapists,2013,21046
+Physiotherapists,2014,22372
+Physiotherapists,2015,23577
+Physiotherapists,2016,24271
+Physiotherapists,2017,25523
+Physiotherapists,2018,27265
+Physiotherapists,2019,29508
+Physiotherapists,2020,30527
+Physiotherapists,2021,32376
+Physiotherapists,2022,34063
+Physiotherapists,2023,35889
+Podiatrists,2013,3693
+Podiatrists,2014,3951
+Podiatrists,2015,4127
+Podiatrists,2016,4327
+Podiatrists,2017,4491
+Podiatrists,2018,4730
+Podiatrists,2019,4925
+Podiatrists,2020,5082
+Podiatrists,2021,5253
+Podiatrists,2022,5316
+Podiatrists,2023,5479
+Psychologists,2013,23086
+Psychologists,2014,23810
+Psychologists,2015,24474
+Psychologists,2016,25219
+Psychologists,2017,26311
+Psychologists,2018,27027
+Psychologists,2019,28412
+Psychologists,2020,31618
+Psychologists,2021,31431
+Psychologists,2022,32773
+Psychologists,2023,34919
+Paramedicine Practitioners,2019,16207
+Paramedicine Practitioners,2020,17202
+Paramedicine Practitioners,2021,18718
+Paramedicine Practitioners,2022,19975
+Paramedicine Practitioners,2023,20929
+Total,2013,503995
+Total,2014,517480
+Total,2015,531955
+Total,2016,548432
+Total,2017,565865
+Total,2018,586342
+Total,2019,625228
+Total,2020,642479
+Total,2021,670416
+Total,2022,688555
+Total,2023,722318
